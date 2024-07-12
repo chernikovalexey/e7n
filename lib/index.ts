@@ -102,7 +102,7 @@ export const updateHtml = (
   attr = ATTR_NAME
 ) => {
   context = context || document;
-  const elts = context.querySelectorAll(`[${CSS.escape(attr)}]`) as NodeListOf<
+  const elts = context.querySelectorAll(`[${CSS.escape(attr)}], [" + CSS.escape(attr) + "-html]`) as NodeListOf<
     HTMLElement
   >;
 
@@ -114,11 +114,10 @@ export const updateHtml = (
 export const updateElt = (elt: HTMLElement, key?: string, attr = ATTR_NAME) => {
   const htmlAttr = elt.getAttribute(`${attr}-html`);
   const asHtml = htmlAttr !== null && htmlAttr !== undefined;
-
   const text = (asHtml ? elt.innerHTML : elt.innerText).trim();
-  key = key || asKey(text);
-
+  key = htmlAttr || key || asKey(text);
   const message = tr(text, key, undefined, undefined, asHtml);
+  
   if (message && message !== text) {
     if (asHtml) {
       elt.innerHTML = message;
